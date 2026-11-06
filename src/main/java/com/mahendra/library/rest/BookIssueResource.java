@@ -7,8 +7,8 @@ import com.mahendra.library.models.BookIssue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/issues")
-@Api(value="/api/issues", description="Operations for Book-Issues")
+@Tag(name="Book Issues", description="Operations for Book-Issues")
 public class BookIssueResource {
 
 	@Autowired private BookIssueDAO dao;
 	
 	@GetMapping(produces="application/json")
-	@ApiOperation("Get all the Book Issues")
+	@Operation(summary="Get all the Book Issues")
 	public ResponseEntity<List<BookIssue>> findAll(){
 		List<BookIssue> issues = new LinkedList<>();
 		dao.findAll().forEach(issues::add);
@@ -35,7 +35,7 @@ public class BookIssueResource {
 	}
 
 	@GetMapping(produces="application/json",value="/{ID}")
-	@ApiOperation("Search Issue by Issue ID")
+	@Operation(summary="Search Issue by Issue ID")
 	public ResponseEntity<BookIssue> findIssue(@PathVariable("ID") int issueId){
 		Optional<BookIssue> issue = dao.findById(issueId);	
 		if(issue.isEmpty()){
@@ -45,14 +45,14 @@ public class BookIssueResource {
 	}
 
 	@PostMapping(consumes="application/json",produces="application/json")
-	@ApiOperation("Issue a book to member")
+	@Operation(summary="Issue a book to member")
 	public ResponseEntity<BookIssue> save(BookIssue issue){
 		BookIssue newIssue = dao.save(issue);
 		return new ResponseEntity<>(newIssue,HttpStatus.CREATED);
 	}
 
 	@PutMapping(value="{ID}", produces="application/json", consumes="application/json")
-	@ApiOperation("Updates an issue using Issue ID")
+	@Operation(summary="Updates an issue using Issue ID")
 	public ResponseEntity<BookIssue> update(@PathVariable("ID") int issueId, BookIssue issue ){
 		Optional<BookIssue> oldIssue = dao.findById(issueId);	
 		if(oldIssue.isEmpty()){
@@ -64,7 +64,7 @@ public class BookIssueResource {
 	}
 
 	@DeleteMapping(value="{ID}", produces="application/json")
-	@ApiOperation("Delete an Issue by Issue ID")
+	@Operation(summary="Delete an Issue by Issue ID")
 	public ResponseEntity<String> delete (@PathVariable("ID") int issueId){
 		dao.deleteById(issueId);
 		return new ResponseEntity<>("Member successfully deleted !",HttpStatus.OK);
